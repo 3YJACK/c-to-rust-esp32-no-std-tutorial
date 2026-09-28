@@ -1,6 +1,6 @@
 # 学习目标
 
-使用`esp-generate`创建工程(注意启用embassy异步框架)，并参考embassy同步通信模块的官方文档[embassy_sync - Rust](https://docs.rs/embassy-sync/latest/embassy_sync/)，编写代码并使用`Channel` 完成日志打印的多对一同步的应用示例。
+使用`esp-generate`创建工程(注意启用embassy异步框架)，并参考embassy同步通信模块的官方文档[embassy_sync - Rust](https://docs.rs/embassy-sync/latest/embassy_sync/)，编写代码并使用`Channel` 完成多对一同步通信的应用示例。
 
 # 完整源码
 
@@ -113,7 +113,7 @@ async fn main(spawner: Spawner) -> ! {
     info!("Embassy initialized!");
 
     static CHANNEL: Channel<CriticalSectionRawMutex, &'static str, CHANNEL_CAPACITY> = Channel::new();
-    
+
     let channel_sender0 = CHANNEL.sender();
     let channel_sender1 = CHANNEL.sender();
     let channel_receiver = CHANNEL.receiver();
@@ -131,7 +131,6 @@ async fn main(spawner: Spawner) -> ! {
 
     // for inspiration have a look at the examples at https://github.com/esp-rs/esp-hal/tree/esp-hal-v1.1.0/examples
 }
-
 ```
 
 **引脚连接参照表：**
@@ -156,7 +155,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-每两秒主循环任务往通道发送消息，打印任务接收消息并打印出来
+主循环任务每两秒往通道发送一次消息，当按键按下时，`button_sender`任务也会往通道发送消息，打印任务持续接收通道消息并将其打印出来，最终实现多发一收的日志打印同步通信。
 
 # 代码讲解
 
