@@ -32,7 +32,7 @@ esp_bootloader_esp_idf::esp_app_desc!();
 
 #[embassy_executor::task]
 async fn write_task_a(
-    shared_data: Mutex<'static, CriticalSectionRawMutex, u32>
+    shared_data: &'static Mutex<CriticalSectionRawMutex, u32>
 ) {
     loop {
         Timer::after(Duration::from_millis(1000)).await;
@@ -46,7 +46,7 @@ async fn write_task_a(
 
 #[embassy_executor::task]
 async fn write_task_b(
-    shared_data: Mutex<'static, CriticalSectionRawMutex, u32>
+    shared_data: &'static Mutex<CriticalSectionRawMutex, u32>
 ) {
     loop {
         Timer::after(Duration::from_millis(1500)).await;
@@ -101,8 +101,8 @@ async fn main(spawner: Spawner) -> ! {
 
     static MUTEX: Mutex<CriticalSectionRawMutex, u32> = Mutex::new(0);
 
-    spawner.spawn(write_task_a(MUTEX).expect("Failed to spawn write_task_a"));
-    spawner.spawn(write_task_b(MUTEX).expect("Failed to spawn write_task_b"));
+    spawner.spawn(write_task_a(&MUTEX).expect("Failed to spawn write_task_a"));
+    spawner.spawn(write_task_b(&MUTEX).expect("Failed to spawn write_task_b"));
 
     loop {
         Timer::after(Duration::from_millis(5000)).await;
