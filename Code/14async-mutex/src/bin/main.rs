@@ -7,12 +7,18 @@
 )]
 #![deny(clippy::large_stack_frames)]
 
-use esp_hal::clock::CpuClock;
-use esp_hal::timer::timg::TimerGroup;
-
+use esp_hal::{
+    clock::CpuClock,
+    timer::timg::TimerGroup,
+    interrupt::software::SoftwareInterruptControl,
+};
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
+use embassy_sync::{     // 导入emabssy同步通信模块
+    blocking_mutex::raw::CriticalSectionRawMutex, 
+    mutex::Mutex,
+};
 
 use log::info;
 
@@ -20,10 +26,37 @@ use esp_backtrace as _;
 
 extern crate alloc;
 
-
 // This creates a default app-descriptor required by the esp-idf bootloader.
 // For more information see: <https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/app_image_format.html#application-description>
 esp_bootloader_esp_idf::esp_app_desc!();
+
+#[embassy_executor::task]
+async fn write_task_a(
+    shared_data: Mutex<'static, CriticalSectionRawMutex, u32>
+) {
+    loop {
+        Timer::after(Duration::from_millis(1000)).await;
+        {
+            let mut guard = shared_data.lock().await;
+            *guard =  *guard + 1;
+            info!("data: {}, written by Task A", *guard);
+        }
+    }
+}
+
+#[embassy_executor::task]
+async fn write_task_b(
+    shared_data: Mutex<'static, CriticalSectionRawMutex, u32>
+) {
+    loop {
+        Timer::after(Duration::from_millis(1500)).await;
+        {
+            let mut guard = shared_data.lock().await;
+            *guard =  *guard + 1;
+            info!("data: {}, written by Task B", *guard);
+        }
+    }
+}
 
 #[allow(
     clippy::large_stack_frames,
@@ -40,13 +73,13 @@ async fn main(spawner: Spawner) -> ! {
     let peripherals = esp_hal::init(config);
 
     // The following pins are used to bootstrap the chip. They are available
-                    // for use, but check the datasheet of the module for more information on them.
-                    // - GPIO0
-// - GPIO3
-// - GPIO45
-// - GPIO46
-// These GPIO pins are in use by some feature of the module and should not be used.
-                        let _ = peripherals.GPIO27;
+    // for use, but check the datasheet of the module for more information on them.
+    // - GPIO0
+    // - GPIO3
+    // - GPIO45
+    // - GPIO46
+    // These GPIO pins are in use by some feature of the module and should not be used.
+    let _ = peripherals.GPIO27;
     let _ = peripherals.GPIO28;
     let _ = peripherals.GPIO29;
     let _ = peripherals.GPIO30;
@@ -58,24 +91,22 @@ async fn main(spawner: Spawner) -> ! {
     let _ = peripherals.GPIO36;
     let _ = peripherals.GPIO37;
 
-
     esp_alloc::heap_allocator!(#[esp_hal::ram(reclaimed)] size: 73744);
 
     let timg0 = TimerGroup::new(peripherals.TIMG0);
-    let sw_interrupt =
-        esp_hal::interrupt::software::SoftwareInterruptControl::new(peripherals.SW_INTERRUPT);
+    let sw_interrupt = SoftwareInterruptControl::new(peripherals.SW_INTERRUPT);
     esp_rtos::start(timg0.timer0, sw_interrupt.software_interrupt0);
 
     info!("Embassy initialized!");
 
+    static MUTEX: Mutex<CriticalSectionRawMutex, u32> = Mutex::new(0);
 
-    // TODO: Spawn some tasks
-    let _ = spawner;
+    spawner.spawn(write_task_a(MUTEX).expect("Failed to spawn write_task_a"));
+    spawner.spawn(write_task_b(MUTEX).expect("Failed to spawn write_task_b"));
 
     loop {
-        info!("Hello world!");
-        Timer::after(Duration::from_secs(1)).await;
+        Timer::after(Duration::from_millis(5000)).await;
     }
-
     // for inspiration have a look at the examples at https://github.com/esp-rs/esp-hal/tree/esp-hal-v1.1.0/examples
 }
+
