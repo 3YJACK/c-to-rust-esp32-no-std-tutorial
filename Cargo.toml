@@ -9,7 +9,8 @@ members = [
   "Code/10async-blink",
   "Code/11async-priority",
   "Code/12async-signal&watch",
-  "Code/13async-channel"
+  "Code/13async-channel",
+  "Code/14async-mutex",
 ]
 resolver = "3"
 
