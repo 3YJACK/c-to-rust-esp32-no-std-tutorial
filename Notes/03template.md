@@ -267,7 +267,7 @@ esp_println::logger::init_logger_from_env();
 
 ```rust
 macro_rules! add_one { 
-    // $x:expr 表示接受一个表达式作为参数，命名为 $x 
+    // $x:expr 表示接受一个表达式作为参数
     ($x:expr) => { $x + 1 };
 } 
 
@@ -277,6 +277,10 @@ println! ( "{}" , result); // 输出 6
 // 无参数宏
 macro_rules! say_hello { 
      // () 表示这个宏不需要参数 
-     () => { info! ( "Hello from macro!" ); };
+     () => { 
+         info! ( "Hello from macro!" );
+      };
 }
 ```
+
+需要注意的是，宏定义时`macro_rules!` 里的参数必须用 `$` 声明和引用。
