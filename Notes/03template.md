@@ -1,4 +1,6 @@
-根据上篇笔记`02工程创建`使用`esp-generate`按以下配置创建一个简单工程模板。
+# 学习目标
+
+根据上篇笔记`02工程创建`使用`esp-generate`按以下配置创建一个工程模板并进行简单的了解学习和烧录运行。
 
 ```powershell
  ✅ Enable unstable HAL features. 
@@ -13,7 +15,7 @@
 
 # 完整源码
 
-下面为带了个人注释笔记的工程模板源码（相应的工程文件放在`./Code`）：
+下面是附带注释讲解的工程目标源码，对应源码文件在`./Code`文件夹中：
 
 ```rust
 // no_std 和 no_main 表示这是一个“没有标准库、没有默认 main 入口”的嵌入式程序。
@@ -121,7 +123,7 @@ cargo build
 cargo espflash flash --monitor
 ```
 
-`--monitor`在烧录完成后自动打开串口监视器查看日志输出。
+`--monitor`会在烧录完成后自动打开串口监视器查看日志输出。
 
 **预期效果：**
 
@@ -133,7 +135,7 @@ Finished `dev` profile [optimized + debuginfo] target(s) in 1m 32s
 
 执行烧录命令应能看到以下日志信息：
 
-```
+```powershell
 Chip type:         esp32s3 (revision v0.2)
 Crystal frequency: 40 MHz
 Flash size:        16MB
@@ -229,7 +231,7 @@ INFO - Hello world!
 而在`mian`函数前面，又使用了外部属性，也就是仅作用于`main`函数的局部允许使用大型栈数据，不会触发编译器警告。原因在代码中也给出：
 
 > it's not unusual to allocate larger buffers etc. in main
->
+> 
 > 在 main 函数里分配较大的缓冲区是很常见的。
 
 ```rust
@@ -248,11 +250,33 @@ fn main() -> ! {
 
 `log`crate是rust社区中广泛使用的日志工具之一。
 
-源码中`esp_println`提供了日志工具的具体实现，初始化了日志系统并让ESP的logger成为`log`日志系统的后端，这样使用`info!`打印宏等日志消息都会通过ESP的logger进行输出（通常是输出到串口）。
+源码中`esp_println`提供了日志工具的具体实现，初始化了日志系统并让ESP的 logger 成为`log`日志系统的后端，这样使用`info!`打印宏等日志消息都会通过ESP的 logger 进行输出（通常是输出到串口）。
 
 ```rust
 use log::info;
 
 // 初始化 log 日志系统为 esp_println::logger 
 esp_println::logger::init_logger_from_env();
+```
+
+## 宏
+
+源码中出现的`info!`这种带`!`的调用其实是rust中对宏的表示。
+
+如果要自行定义宏，则使用`macro_rules!` 来定义声明，示例如下：
+
+```rust
+macro_rules! add_one { 
+    // $x:expr 表示接受一个表达式作为参数，命名为 $x 
+    ($x:expr) => { $x + 1 };
+} 
+
+let result = add_one!( 5 ); // 展开成 5 + 1 
+println! ( "{}" , result); // 输出 6
+
+// 无参数宏
+macro_rules! say_hello { 
+     // () 表示这个宏不需要参数 
+     () => { info! ( "Hello from macro!" ); };
+}
 ```
