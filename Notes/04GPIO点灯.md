@@ -137,7 +137,8 @@ let mut led = Output::new(peripherals.GPIO2, Level::Low, OutputConfig::default()
 ```markdown
 Output pin configuration
 
-This struct is used to configure the drive mode, drive strength, and pull direction of an output pin. By default, the configuration is set to:
+This struct is used to configure the drive mode, drive strength, and pull direction of an output pin.
+ By default, the configuration is set to:
 
 - Drive mode: `DriveMode::PushPull`
 - Drive strength: `DriveStrength::_20mA`
