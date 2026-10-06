@@ -1,4 +1,6 @@
-> 本篇使用`esp-generate`创建工程并参考`esp-rs/esp-hal`仓库的`./example/interrupt/uart`示例，编写代码并实现最简UART通信功能。 
+# 学习目标
+
+使用`esp-generate`创建工程并参考`esp-rs/esp-hal`仓库的`./example/interrupt/uart`示例，编写代码并实现简单UART串口通信功能。 
 
 # 完整源码
 
@@ -107,7 +109,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-在编译及烧录成功之后，日志输出信息应每秒打印一次**Hello, UART!**
+成功烧录并运行程序后，日志输出信息应每秒打印一次*“Hello, UART!”*。
 
 # 代码讲解
 
@@ -133,7 +135,7 @@ UART的初始化流程与上一篇的GPIO如出一辙：
 
 完成初始化即可操作UART收发数据，相关的函数方法，数据类型等待都可在官方文档[esp_hal::uart - Rust](https://docs.espressif.com/projects/rust/esp-hal/1.1.0/esp32s3/esp_hal/uart/index.html)中查阅。
 
-## Result类型及其处理
+## Result与错误处理
 
 在上示的UART初始化代码片段中，需要注意的是`Uart::new()`返回的是一个`ResuLt`类型，必须对其处理才能得到`Uart`对象。
 
