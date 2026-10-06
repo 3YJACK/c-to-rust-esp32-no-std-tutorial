@@ -1,4 +1,6 @@
-> 本篇使用`esp-generate`创建工程并参考`esp-rs/esp-hal`仓库的`./example/interrupt/gpio`示例，编写代码并实现GPIO点灯闪烁功能。
+# 学习目标
+
+使用`esp-generate`创建工程并参考`esp-rs/esp-hal`仓库的`./example/interrupt/gpio`示例，编写代码并实现GPIO点灯闪烁功能。
 
 # 完整源码
 
@@ -102,7 +104,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-在编译及烧录成功之后，目标引脚输出高低电平方波，日志输出信息应该如下所示，若连接LED灯，则LED灯应进行周期性闪烁。
+在编译及烧录成功之后，目标引脚输出高低电平方波，日志输出信息应该如下所示，若连接LED灯，则LED灯应进行周期性亮灭闪烁。
 
 ```
 INFO - led level: Low
@@ -132,6 +134,7 @@ let mut led = Output::new(peripherals.GPIO2, Level::Low, OutputConfig::default()
 
 阅读官方文档[esp-rs Documentation and Resources](https://docs.espressif.com/projects/rust/)中`esp-hal`的章节可知，输出配置结构体的成员及默认配置如下：
 
+```markdown
 Output pin configuration
 
 This struct is used to configure the drive mode, drive strength, and pull direction of an output pin. By default, the configuration is set to:
@@ -139,6 +142,7 @@ This struct is used to configure the drive mode, drive strength, and pull direct
 - Drive mode: `DriveMode::PushPull`
 - Drive strength: `DriveStrength::_20mA`
 - Pull direction: `Pull::None` (no pull resistors connected)
+```
 
 因此，自行配置GPIO输出/输出模式并初始化的流程及示例如下：
 
