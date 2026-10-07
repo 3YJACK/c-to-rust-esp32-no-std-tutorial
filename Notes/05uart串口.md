@@ -2,6 +2,10 @@
 
 使用`esp-generate`创建工程并参考`esp-rs/esp-hal`仓库的`./example/interrupt/uart`示例，编写代码并实现简单UART串口通信功能。 
 
+**前置知识：**
+
+本篇内容建议在掌握了[00语法基础](./00语法基础.md)中**<u>枚举类型</u>**的**<u>Result</u>**之后再进行学习。
+
 # 完整源码
 
 ```rust
@@ -135,74 +139,16 @@ UART的初始化流程与上一篇的GPIO如出一辙：
 
 完成初始化即可操作UART收发数据，相关的函数方法，数据类型等待都可在官方文档[esp_hal::uart - Rust](https://docs.espressif.com/projects/rust/esp-hal/1.1.0/esp32s3/esp_hal/uart/index.html)中查阅。
 
-## Result与错误处理
+## Result
 
-在上示的UART初始化代码片段中，需要注意的是`Uart::new()`返回的是一个`ResuLt`类型，必须对其处理才能得到`Uart`对象。
+在上示的UART初始化代码片段中，`Uart::new()`返回的是一个`Result`类型，其中包含着UART的初始化结果。如果初始化成功，则可以从`Result`中取出相应的UART实例，否之取出的是UART的错误码，关于错误码具体可见官方文档中的`uart`模块中的`ConfigError`。
 
 ```rust
     let mut uart = Uart::new(peripherals.UART1, uart_config)
         .expect("Failed to initialize UART")    
 ```
 
-`Result`类型是对返回结果的一层封装，可能是成功(OK)也可能是失败(err)。这里的处理方法是`.expect()`，即成功的话就取出其返回值也就是`Uart`对象，失败的话也会返回值但这里对于失败的处理是打印错误信息并停止程序运行。
-
-除此之外，对于`Result`类型处理方法，还有`.unwrap()`，`?`操作符，`match`匹配等。
-
-**1.`.unwrap()`终止程序**
-
-跟`.expect()`一样，当`Reslut`类是错误时直接终止程序。但不同的是`.unwrap()` 在终止程序不能打印指定的日志信息，而`.expect()`可以。
-
-**2.`?`向上传播**
-
-`?` 是 Rust 的**错误传播语法**，加在返回 `Result` / `Option` 的表达式后面。
-
-带`?`的表达式在运行出错时会将错误值返回给该表达式的调用者，`?`操作符的报错信息还可以向上沿着调用链冒泡传播，直到传播过程中错误信息被处理或最终传到`main`函数。
-
-以下面代码为例：
-
-```rust
-// 为了演示，将源码的uart初始化过程封装为一个返回result类型的函数
-fn uart_init() -> Result<Uart, Error>
-{
-   let uart_config = Config::default()
-        .with_baudrate(115200)
-        .with_data_bits(DataBits::_8)
-        .with_parity(Parity::None)
-        .with_stop_bits(StopBits::_1);
-
-    let mut uart = Uart::new(peripherals.UART1, uart_config)?  
-        .with_tx(peripherals.GPIO43)
-        .with_rx(peripherals.GPIO44);  
-}
-
-fn main()-> Result<()> 
-{
-    // ......
-
-    let mut uart = uart_init()?；
-
-    Ok(())
-}
-```
-
-在该示例中，如果`Uart::new()`对象创建失败，`?`操作符会将错误值会返回给`uart_init()`，而`uart_init()`也因`？`操作符继续将错误值向上传播给`main()`，最终程序退出并将错误值打印出来。
-
-相比传统写法中对每个可能出错的函数都进行结果判断并处理，`？`操作符用起来要方便简洁的多。
-
-**注意：**`?` 只能在**返回 `Result` 或 `Option` 的函数**中对**返回 `Result` / `Option` 的表达式**使用。
-
-**3.`match`模式匹配**
-
-显式处理 `Ok` 和 `Err` 两个分支，示例代码如下：
-
-```rust
-let uart = match Uart::new(peripherals.UART1, uart_config) 
-{
-    Ok(u) => u.with_tx(...)
-              .with_rx(...),
-    Err(e) => panic!("Failed to initialize UART: {:?}", e);
-};
-```
+示例中使用了`.expect()`方法对结果进行展开，如果结果为错误的话还会打印消息*"Failed to initialize UART"*。
 
 ## 字节切片
 
