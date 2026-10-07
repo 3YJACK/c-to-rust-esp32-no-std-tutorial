@@ -7,7 +7,7 @@
 需先在终端中通过下面命令添加对应依赖，才能导入emabssy的同步通信模块：
 
 ```powershell
-cargo add embassy-sync**引脚连接参照表：**
+cargo add embassy-sync
 ```
 
 ```rust
