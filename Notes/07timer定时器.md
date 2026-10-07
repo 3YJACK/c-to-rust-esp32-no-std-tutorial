@@ -97,7 +97,7 @@ fn main() -> ! {
         TIMER.borrow_ref_mut(cs)
             .replace(prd_timer);
     });
-    
+
     // 创建 LED2 用于 PWM 控制其亮度，采用 LEDC 外设
     let mut led2 = Ledc::new(peripherals.LEDC);
     // 根据官方文档可知 LEDC 使用时钟源为 APB 
@@ -173,7 +173,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-根据引脚连接参照表，将两个LED接到对应GPIO上，然后烧录运行代码，应能看到一个LED每秒翻转一次电平，同时日志打印输出"Timer interrupt triggered, LED toggled."，另一个LED呈呼吸灯效果，明暗交替。
+根据引脚连接参照表，将两个LED接到对应GPIO上，然后烧录运行代码，应能看到一个LED每秒翻转一次电平，同时日志打印输出*"Timer interrupt triggered, LED toggled."*，另一个LED呈呼吸灯效果，明暗交替。
 
 # 代码讲解
 
@@ -211,7 +211,7 @@ cargo espflash flash --monitor
 
 本篇示例中仅演示`LEDC`，`MCPWM`可参考官方文档自行实现。
 
-LEDC的实现流程为：**创建→配置定时器和PWM输出通道→应用**。如下所示，代码较为简单，这里就不多解释，需要注意的是，`LEDC`的`channel`的相关方法是定义在其`Trait`——`ChannelIFace`中的。
+LEDC的实现流程为：**创建→配置定时器和PWM输出通道→应用**。如下所示，代码较为简单，这里就不多解释，需要注意的是，`LEDC`的`channel`的相关方法是定义在其`Trait`模块的`ChannelIFace`中的。
 
 ```rust
     // 创建 LED2 用于 PWM 控制其亮度，采用 LEDC 外设
@@ -339,4 +339,4 @@ fn main() {
 | **命名冲突风险**   | ✅ **极低**（必须带模块前缀，路径清晰）                            | ⚠️ **中等**（若导入同名类型会冲突，例如`timer`模块再引入自身的话会引发冲突）        | ❌ **极高**（极易污染命名空间）                                   |
 | **代码可读性**    | ✅ **高**（读者能立刻看出引用路径）                              | ⚠️ **中等**（需看头部 `use` 才能确定来源）                         | ❌ **低**（难以判断引用自哪个模块）                                 |
 
-应根据实际场景，选择合适的导入方式！
+在实际实践时，应根据实际场景，选择合适的导入方式！
