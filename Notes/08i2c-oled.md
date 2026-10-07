@@ -133,7 +133,7 @@ fn main() -> ! {
     Text::with_baseline("Hello world!", Point::zero(), text_style, Baseline::Top)
     .draw(&mut display)
     .expect("Failed to draw text 1");
-    
+
     Text::with_baseline("Hello Rust!", Point::new(0, 16), text_style, Baseline::Top)
     .draw(&mut display)
     .expect("Failed to draw text 2");
@@ -142,7 +142,7 @@ fn main() -> ! {
 
     info!("program running");
     loop {
-        
+
     }
 
     // for inspiration have a look at the examples at https://github.com/esp-rs/esp-hal/tree/esp-hal-v1.1.0/examples
@@ -151,10 +151,10 @@ fn main() -> ! {
 
 **引脚连接参照表：**
 
-| 外设     | 对应引脚 |
-| -------- | -------- |
-| OLED_SCL | GPIO42   |
-| OLED_SDA | GPIO41   |
+| 外设       | 对应引脚   |
+| -------- | ------ |
+| OLED_SCL | GPIO42 |
+| OLED_SDA | GPIO41 |
 
 # 烧录运行
 
@@ -172,7 +172,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-连接好`SSD1306`驱动的OLED显示屏，烧录运行程序后应可以看到OLED显示屏中分两行显示信息。第一行显示"Hello world!""，第二行显示"Hello Rust!"。
+连接好`SSD1306`驱动的OLED显示屏，烧录运行程序后应可以看到OLED显示屏中分两行显示信息。第一行显示*"Hello world!"*，第二行显示*"Hello Rust!"*。
 
 # 代码讲解
 
@@ -213,10 +213,10 @@ i2c外设的配置及创建示例如下：
 
 因此在`embedded-hal`生态中，设备驱动和芯片厂商的角色分工非常明确：
 
-| 角色          | 做什么                                  | 例子                           |
-| ------------- | --------------------------------------- | ------------------------------ |
-| **芯片HAL库** | 为具体芯片实现`embedded-hal`的trait     | `esp-hal`、`stm32f4xx-hal`     |
-| **设备驱动**  | 只依赖`embedded-hal`的trait，不关心芯片 | `ssd1306`、`bmp180`、`mpu6050` |
+| 角色         | 做什么                           | 例子                           |
+| ---------- | ----------------------------- | ---------------------------- |
+| **芯片HAL库** | 为具体芯片实现`embedded-hal`的trait   | `esp-hal`、`stm32f4xx-hal`    |
+| **设备驱动**   | 只依赖`embedded-hal`的trait，不关心芯片 | `ssd1306`、`bmp180`、`mpu6050` |
 
 **芯片HAL库**：如`esp-hal`，负责把ESP32的硬件寄存器操作，封装成`embedded_hal::i2c::I2c` trait的实现。
 
@@ -265,9 +265,13 @@ Ssd1306<esp_hal::i2c::master::I2c<'_, Blocking>>
 
 - **Rust `embedded-hal` 的做法**： `i2c.write(address, data)`，这个 Trait 方法在编译时会被替换成具体的 `esp_hal::i2c::I2C` 或 `stm32_hal::i2c::I2C` 的实现。驱动代码**不关心**硬件平台用的是 ESP32 还是 STM32。
 
-|              | **Linux 抽象**                                   | **Rust 抽象**                                                 |
-| ------------ | ------------------------------------------------ | ------------------------------------------------------------- |
-| **发生时机** | **运行时**                                       | **编译时**                                                    |
+|          | **Linux 抽象**                | **Rust 抽象**                                    |
+| -------- | --------------------------- | ---------------------------------------------- |
+| **发生时机** | **运行时**                     | **编译时**                                        |
 | **实现机制** | 函数指针、结构体虚表（Vtable）、设备树动态匹配。 | 泛型单态化（Monomorphization）、静态分发（Static Dispatch）。 |
-| **性能开销** | 有运行时开销（函数指针跳转、指令缓存污染）。     | **零开销**，编译后生成的代码。                                |
-| **灵活性**   | 可以在不重启系统的情况下加载/卸载驱动模块。      | 驱动在编译时就已完全固定。换一颗芯片，需要重新编译整个固件。  |
+| **性能开销** | 有运行时开销（函数指针跳转、指令缓存污染）。      | **零开销**，编译后生成的代码。                              |
+| **灵活性**  | 可以在不重启系统的情况下加载/卸载驱动模块。      | 驱动在编译时就已完全固定。换一颗芯片，需要重新编译整个固件。                 |
+
+# 特征-Trait
+
+`trait`（特征）是 Rust 中定义**共享行为**的核心机制。它规定一个类型能做什么，但不关心这个类型具体是什么。**trait 会定义一组方法签名，任何类型只要实现了这个 trait，就承诺拥有这些能力。**
