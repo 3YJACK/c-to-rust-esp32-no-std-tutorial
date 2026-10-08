@@ -131,7 +131,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-`low_prio_task`每三秒输出一次*"Low priority task running!"*，`high_prio_task`每秒输出一次*"High priority task running!"*。`low_prio_task`通过阻塞三秒来模拟正在运行中，`high_prio_task`因为其优先级更高，所以可以打断`low_prio_task`的阻塞并保持正常运行。
+`low_prio_task`每三秒输出一次 *"Low priority task running!"*，`high_prio_task`每秒输出一次 *"High priority task running!"*。`low_prio_task`通过阻塞三秒来模拟正在运行中，`high_prio_task`因为其优先级更高，所以可以打断`low_prio_task`的阻塞并保持正常运行。
 
 # 代码讲解
 
