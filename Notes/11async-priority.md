@@ -131,9 +131,11 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
+`low_prio_task`每三秒输出一次*"Low priority task running!"*，`high_prio_task`每秒输出一次*"High priority task running!"*。`low_prio_task`通过阻塞三秒来模拟正在运行中，`high_prio_task`因为其优先级更高，所以可以打断`low_prio_task`的阻塞并保持正常运行。
+
 # 代码讲解
 
-# 任务优先级
+## 任务优先级
 
 rust的异步框架中也有任务优先级的划分，但是实现方式和传统的 RTOS不太一样。Embassy 的优先级机制，本质上是**通过创建多个不同优先级的执行器（Executor）实例来完成的**。
 
@@ -188,5 +190,3 @@ async fn main(low_prio_spawner: Spawner){
 - **`StaticCell`**：直接给你一个`&mut T`，修改时没有任何运行时检查开销，且这个引用是整个程序唯一的，资源被独占，它只适用于“单线程/单任务”上下文。
 
 - **`Mutex<RefCell<Option<T>>>`**：你获取修改权限时必须经过**运行时检查**（`.borrow_mut()` 检查是否已被借用，`.lock()` 检查是否被其他任务抢占）。资源可以共享，它适用于“多任务并发”上下文。
-
-
