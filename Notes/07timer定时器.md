@@ -173,7 +173,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-根据引脚连接参照表，将两个LED接到对应GPIO上，然后烧录运行代码，应能看到一个LED每秒翻转一次电平，同时日志打印输出*"Timer interrupt triggered, LED toggled."*，另一个LED呈呼吸灯效果，明暗交替。
+根据引脚连接参照表，将两个LED接到对应GPIO上，然后烧录运行代码，应能看到一个LED每秒翻转一次电平，同时日志打印输出 *"Timer interrupt triggered, LED toggled."*，另一个LED呈呼吸灯效果，明暗交替。
 
 # 代码讲解
 

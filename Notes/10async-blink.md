@@ -102,9 +102,9 @@ async fn main(spawner: Spawner) -> ! {
 
 **引脚连接参照表：**
 
-| 外设  | 对应引脚 |
-| ----- | -------- |
-| LED灯 | GPIO4    |
+| 外设   | 对应引脚  |
+| ---- | ----- |
+| LED灯 | GPIO4 |
 
 # 烧录运行
 
@@ -122,7 +122,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-烧录运行程序后，串口日志每秒输出一次*“Hello world!"*，同时LED灯每秒翻转一次电平，以一秒为周期进行闪烁。两个任务互不阻塞，异步运行。
+烧录运行程序后，串口日志每秒输出一次 *“Hello world!"*，同时LED灯每秒翻转一次电平，以一秒为周期进行闪烁。两个任务互不阻塞，异步运行。
 
 # 代码讲解
 
@@ -153,10 +153,10 @@ async fn blink(mut led: Output<'static>) {
 #[esp_rtos::main]
 async fn main(spawner: Spawner) -> ! {
     // ......
-    
+
     // 创建异步任务blink并将其加入到执行器的调度队列中
     spawner.spawn(blink(led).expect("Failed to spawn blink task"));
-    
+
     // ......
 }
 ```

@@ -172,7 +172,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-连接好`SSD1306`驱动的OLED显示屏，烧录运行程序后应可以看到OLED显示屏中分两行显示信息。第一行显示*"Hello world!"*，第二行显示*"Hello Rust!"*。
+连接好`SSD1306`驱动的OLED显示屏，烧录运行程序后应可以看到OLED显示屏中分两行显示信息。第一行显示 *"Hello world!"*，第二行显示 *"Hello Rust!"*。
 
 # 代码讲解
 
