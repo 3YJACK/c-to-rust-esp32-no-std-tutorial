@@ -68,7 +68,8 @@
 
 ### 硬件
 
--  ESP32S3 开发板（本项目使用 ESP32S3-WROOM-1 模组）
+- ESP32S3 开发板（其它支持rust开发的ESP32系列芯片也可以，详细型号可见[esp_hal Documentation](https://docs.espressif.com/projects/rust/esp-hal/1.2.0/index.html)）
+- LED灯，按键，OLED显示屏等基础外设
 
 ### 软件
 
