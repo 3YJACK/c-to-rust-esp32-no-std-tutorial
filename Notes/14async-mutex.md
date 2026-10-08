@@ -4,7 +4,7 @@
 
 # 完整源码
 
-需先在终端中通过下面命令添加对应依赖，才能导入emabssy的同步通信模块：
+需先在终端中通过下面命令添加对应依赖，才能导入embassy的同步通信模块：
 
 ```powershell
 cargo add embassy-sync
@@ -28,7 +28,7 @@ use esp_hal::{
 
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
-use embassy_sync::{     // 导入emabssy同步通信模块
+use embassy_sync::{     // 导入embassy同步通信模块
     blocking_mutex::raw::CriticalSectionRawMutex, 
     mutex::Mutex,
 };

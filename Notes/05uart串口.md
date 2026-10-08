@@ -137,7 +137,7 @@ UART的初始化流程与上一篇的GPIO如出一辙：
         .with_rx(peripherals.GPIO44);   
 ```
 
-完成初始化即可操作UART收发数据，相关的函数方法，数据类型等待都可在官方文档[esp_hal::uart - Rust](https://docs.espressif.com/projects/rust/esp-hal/1.1.0/esp32s3/esp_hal/uart/index.html)中查阅。
+完成初始化即可操作UART收发数据，相关的函数方法、数据类型等都可在官方文档[esp_hal::uart - Rust](https://docs.espressif.com/projects/rust/esp-hal/1.1.0/esp32s3/esp_hal/uart/index.html)中查阅。
 
 ## Result
 

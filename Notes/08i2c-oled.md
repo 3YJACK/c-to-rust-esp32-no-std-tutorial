@@ -33,7 +33,7 @@ ssd1306 = "0.10.0"
 依赖添加并保存后，Cargo 会在下次构建时自动下载并编译，然后就可以在代码中引入`ssd1306`驱动库并根据文档说明进行使用了。
 
 ```rust
-use ssd1306::{......}；
+use ssd1306::{......};
 ```
 
 # 完整源码
@@ -195,7 +195,7 @@ i2c外设的配置及创建示例如下：
 ```rust
     let interface = I2CDisplayInterface::new(i2c);
     let mut display = Ssd1306::new(interface, DisplaySize128x64, 
-                                    DisplayRotation::Rotate0)；
+                                    DisplayRotation::Rotate0);
     // ......
 ```
 

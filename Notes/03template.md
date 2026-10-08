@@ -228,14 +228,14 @@ INFO - Hello world!
 #![deny(clippy::large_stack_frames)]
 ```
 
-而在`mian`函数前面，又使用了外部属性，也就是仅作用于`main`函数的局部允许使用大型栈数据，不会触发编译器警告。原因在代码中也给出：
+而在`main`函数前面，又使用了外部属性，也就是仅作用于`main`函数的局部允许使用大型栈数据，不会触发编译器警告。原因在代码中也给出：
 
 > it's not unusual to allocate larger buffers etc. in main
 > 
 > 在 main 函数里分配较大的缓冲区是很常见的。
 
 ```rust
-// 对于mian函数，通过#[allow]来允许使用大型栈数据以通过编译
+// 对于main函数，通过#[allow]来允许使用大型栈数据以通过编译
 #[allow(
     clippy::large_stack_frames,
     reason = "it's not unusual to allocate larger buffers etc. in main"
