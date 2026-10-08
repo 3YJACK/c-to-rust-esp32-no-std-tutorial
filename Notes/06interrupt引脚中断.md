@@ -4,7 +4,7 @@
 
 **前置知识：**
 
-本篇内容建议在掌握了[00语法基础](./00语法基础.md)中**<u>数据结构</u>**小节中的**<u>引用</u>**和**<u>枚举类型</u>**的**<u>Option</u>**之后再进行学习。
+本篇内容建议在掌握了[00语法基础](./00语法基础.md)中 **<u>数据结构</u>** 小节中的 **<u>引用</u>** 和 **<u>枚举类型</u>** 的 **<u>Option</u>** 之后再进行学习。
 
 # 完整源码
 
@@ -164,7 +164,7 @@ cargo espflash flash --monitor
 
 **预期效果：**
 
-烧录成功后，每5秒输出日志信息*"Waiting for button press..."*，按下按键后，LED小灯的电平状态翻转，同时输出日志信息*"Button was the source of the interrupt"*。
+烧录成功后，每5秒输出日志信息 *"Waiting for button press..."*，按下按键后，LED小灯的电平状态翻转，同时输出日志信息 *"Button was the source of the interrupt"*。
 
 # 代码讲解
 
@@ -380,7 +380,7 @@ if button.is_interrupt_set() {
 
 这是因为`BUTTON.borrow_ref_mut()`返回的是`RefMut`类型数据，`RefMut` 是一个**守卫**，它内部包含一个指向 `BUTTON` 数据的引用。`.as_mut()`拿到的才是对`RefMut`守卫内部数据的引用，也就是我们所想要使用的数据。
 
-上示示例的`button`虽然保留了这个引用，但**这个引用的生命周期是跟守卫的生命周期绑定**的。而守卫在调用链结束后随即被释放了，`button`所保存的引用也跟着失效，但往下又接着调用了`button.clear_interrupt()`，因此编译时会报错"*creates a temporary value which is freed while still in use*"，大意是使用了已经被释放的临时值`button`。
+上示示例的`button`虽然保留了这个引用，但**这个引用的生命周期是跟守卫的生命周期绑定**的。而守卫在调用链结束后随即被释放了，`button`所保存的引用也跟着失效，但往下又接着调用了`button.clear_interrupt()`，因此编译时会报错 "*creates a temporary value which is freed while still in use*"，大意是使用了已经被释放的临时值`button`。
 
 因此需要先有一个中间值将守卫给保存下来，将其生命周期从当前语句延长到当前代码块，然后再取出其内部的可变引用赋值给一个对象，这样守卫和其内部数据的引用都有了足够的生命周期，自然而然可以实现对内部数据的一次借用，多次操作了。
 
